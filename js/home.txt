@@ -1,0 +1,4 @@
+function openLoginOption(){
+	$(".overlay").show();
+	$("#loginPage").show();
+}

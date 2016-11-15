@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no">
+    <title>Results</title>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/dojox/widget/ColorPicker/ColorPicker.css">
+    <link rel="stylesheet" href="https://js.arcgis.com/3.18/esri/css/esri.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/resultspage.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <style type="text/css">
+    .bs-example{
+        margin: 20px;
+    }
+    </style>
+    <style>
+      html, body, #map {
+        height:100%;
+        width:100%;
+        margin:0;
+        padding:0;
+        background: #404040
+      }
+
+      .dojoxColorPicker {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        -moz-box-shadow: 0 0 7px #888;
+        -webkit-box-shadow: 0 0 7px #888;
+        box-shadow: 0 0 7px #888;
+      }
+    </style>
+
+    <style type="text/css">
+      .rcorners {
+      border-radius: 8px;
+      background: #ffffff;
+      margin: 20px;
+      padding: 20px; 
+      width: 100%;
+      height: 325px; 
+      margin-left: 20px;
+      }
+    </style>
+    <style type="text/css">
+      .row{margin: 0;}
+      .col-md-8{padding: 0}
+      #mainNav{margin:0;}
+      .rcorners{margin: 20px 0 !important;}
+      body{overflow: hidden;}
+      #overflower{overflow-y: auto;}
+      .col-md-6 h3{margin-top: 6px; margin-left:20px; width: 100%;}
+      .col-md-6{padding: 0}
+    </style>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("#map, #overflower").height(window.innerHeight - 51);
+      });
+    </script>
+    <script src="https://js.arcgis.com/3.18/"></script>
+md6
+    <script>
+      var map;
+      
+      require([
+        "esri/map", "esri/geometry/Point", 
+        "esri/symbols/SimpleMarkerSymbol", "esri/graphic",
+        "dojo/_base/array", "dojo/dom-style", "dojox/widget/ColorPicker", 
+        "dojo/domReady!","dojo/parser","esri/geometry/webMercatorUtils","dojo/dom" 
+      ], function(
+        Map, Point,
+        SimpleMarkerSymbol, Graphic,
+        arrayUtils, domStyle, ColorPicker
+      ) {
+
+        map = new Map("map",{
+          basemap: "streets",
+          center: [289, 42.3],
+          zoom: 11,
+          minZoom: 2
+        });
+        
+        map.on("load", function(){
+          mapLoaded();
+          // map.on("mouse-move", showCoordinates);
+          // map.on("mouse-drag", showCoordinates);
+        });
+
+        // function showCoordinates(evt) {
+        //   //the map is in web mercator but display coordinates in geographic (lat, long)
+        //   var mp = webMercatorUtils.webMercatorToGeographic(evt.mapPoint);
+        //   //display mouse coordinates
+        //   dom.byId("info").innerHTML = mp.x.toFixed(3) + ", " + mp.y.toFixed(3);
+        // }
+      
+        function mapLoaded(){
+          var points = [[-71.0847583, 42.3471249], [-71.0959047,42.33951], 
+                        [-71.0863866,42.353771], [-71.0950087,42.357496]];
+
+
+          var iconPath = "m1075.939941,1959.629028c-38.765869,-190.301025 -107.115906,-348.665039 -189.902954,-495.439941c-61.406982,-108.87207 -132.543945,-209.363037 -198.364014,-314.937988c-21.971985,-35.244019 -40.93396,-72.477051 -62.046997,-109.054077c-42.215942,-73.136963 -76.44397,-157.934998 -74.268982,-267.932007c2.125,-107.472961 33.208008,-193.68396 78.029968,-264.171997c73.719055,-115.934967 197.20105,-210.988983 362.884033,-235.968994c135.466064,-20.423981 262.475098,14.082031 352.542969,66.748016c73.600098,43.037994 130.596069,100.527008 173.920044,168.279999c45.219971,70.716003 76.359009,154.26001 78.970947,263.231995c1.337036,55.830017 -7.804932,107.531982 -20.68396,150.417969c-13.033936,43.409058 -33.995972,79.695007 -52.645996,118.454102c-36.406006,75.658936 -82.04895,144.981934 -127.85498,214.345947c-136.437012,206.605957 -264.496094,417.309937 -320.580078,706.026978z";
+          
+          var initColor = ["#4757E8","#404040","#547F70","#FF6665","#FF6F08","#FFF02D"];
+          var index = 0;
+          arrayUtils.forEach(points, function(point) {
+            var graphic = new Graphic(new Point(point), createSymbol(iconPath, initColor[index]));
+            index += 1;
+            map.graphics.add(graphic);
+          });
+          
+        }
+        
+        function createSymbol(path, color){
+          var markerSymbol = new esri.symbol.SimpleMarkerSymbol();
+          markerSymbol.setPath(path);
+          markerSymbol.setColor(new dojo.Color(color));
+          markerSymbol.setOutline(null);
+          return markerSymbol;
+        }
+      });
+    </script>
+
+    <script type="text/javascript">
+
+    var mapping = {"rating":"rating", "description":"description", "firstname":"name", "lastname":"name", "charge":"cost","location":"location"};
+      
+      $.get('http://172.26.4.103:5000/eventsearch/{"user_email":"Sawayn.M@gmail.com", "location":"Boston", "start_time":"2016-11-11  1:00", "end_time":"2016-11-20 23:00"}', function(data){
+
+        index = 1;
+
+        $.each(data, function(d){
+          $.each(this, function(key, val) {
+            // console.log(val)
+            // console.log("KEYS"+"#"+mapping[key]+"-"+index);
+            if(mapping[key] == "rating")
+            {
+              for(var i = 0; i<val; i++)
+              {
+                console.log("add-star"+mapping[key])
+                $("#"+mapping[key]+"-"+index).append('<span>☆</span>');
+              }
+            }
+            else if(mapping[key] == "cost")
+            {
+              //console.log(((Math.floor(Math.random() * 20) + 5)))
+              $("#"+mapping[key]+"-"+index).html("$"+val);//(Math.floor(Math.random() * 20) + 15));
+            }
+            else
+             $("#"+mapping[key]+"-"+index).html(val);
+          });
+          index += 1;
+        });
+
+        for(var i = index; i <= 5; i++) { 
+          //console.log(index);
+          $("#guide-"+index).addClass("hidden");
+          index += 1;
+        }
+        
+      });
+
+    </script>
+
+  </head>
+
+
+<body class="claro">
+
+
+
+<nav id="mainNav" class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="index.html">Travelogue</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="index.html">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="upcomingBookings.html">Dashboard</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#" style="font-weight:600" onclick="openLoginOption()">Hey, Sarah Watson!</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+  
+  <div class="row" style="margin-top:51px">
+    
+    <div class="col-md-8">
+        <div id="map">
+          <span id="info" style="position:absolute; left:15px; top:5px; color:#000; z-index:50000;"></span>
+        </div>
+    </div>
+
+    <div class="col-md-4" id="overflower">
+
+      <div class="rcorners" id="guide-1">
+        <div class="row">
+          <div class="col-md-3">
+           
+                <img src="images/UIFaces/img1.jpg" class="img-responsive img-rounded" alt="Tour Mentor" style="position:absolute, top:50%, left:50%">
+           
+          </div>
+          <div class="col-md-6 guideName">
+            <h3 id="name-1">Bill Rudford</h3>
+            <p class="location-cls"><span class="glyphicon glyphicon-map-marker marker-cls" style='color: #ffc425' id="location-1" >
+              Wrigley Field
+            </span></p>
+          </div>
+          <div class="col-md-3 price-cls">
+            <h3 id="cost-1">$25</h3>
+          </div>
+        </div> 
+        <div class="row">                
+          <div class="rating" id="rating-1">
+              
+          </div>
+          <p class="card-header-text" style="margin: 10px; font-size: 18px;" id="description-1">Baseball match at Wrigley Field</p>
+              <p style="margin-left:9px; margin-top:18px;"> Spend a casual evening with great company going over the little sights of Boston!</p>
+          <div style="text-align:center">  
+            <button class="btn btn-primary btn-cls" style="margin-top: 15px; background-color: #F05F40; font-size:15px;"
+            onclick="$(this).attr('style', 'background-color: #00b159');">Purchase tour </button> 
+          </div> 
+        </div>    
+      </div>
+
+  <div class="rcorners" id="guide-2">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card card-block">
+                <img src="images/UIFaces/img2.jpg" class="img-responsive img-rounded" alt="Tour Mentor" style="position:absolute, top:50%, left:50%">
+            </div>
+          </div>
+          <div class="col-md-6 guideName">
+            <h3 id="name-2">Bill Rudford</h3>
+            <p class="location-cls"><span class="glyphicon glyphicon-map-marker marker-cls" style="color: #fb5858;" id="location-2">
+              Wrigley Field
+            </span></p>
+          </div>
+          <div class="col-md-3 price-cls">
+            <h3 id="cost-2">$25</h3>
+          </div>
+        </div> 
+        <div class="row">                
+          <div class="rating" id="rating-2">
+              
+          </div>
+          <p class="card-header-text" style="margin: 10px; font-size: 18px;" id="description-2">Baseball match at Wrigley Field</p>
+              <p style="margin-left:9px; margin-top:18px;"> Enjoy the hospitality of a great comedian! I bet I'll make you laugh!</p>
+          <div style="text-align:center">  
+            <button class="btn btn-primary btn-cls" style="margin-top: 15px; background-color: #F05F40; font-size:15px;">Purchase tour </button> 
+          </div> 
+        </div>    
+      </div>
+
+      <div class="rcorners" id="guide-3">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card card-block">
+                <img src="images/UIFaces/img3.jpg" class="img-responsive img-rounded" alt="Tour Mentor" style="position:absolute, top:50%, left:50%">
+            </div>
+          </div>
+          <div class="col-md-6 guideName">
+            <h3 id="name-3">Bill Rudford</h3>
+            <p class="location-cls"><span class="glyphicon glyphicon-map-marker marker-cls" style='color:#428bca;' id="location-3">
+              Wrigley Field
+            </span></p>
+          </div>
+          <div class="col-md-3 price-cls">
+            <h3 id="cost-3">$25</h3>
+          </div>
+        </div> 
+        <div class="row">                
+          <div class="rating" id="rating-3">
+              
+          </div>
+          <p class="card-header-text" style="margin: 10px; font-size: 18px;" id="description-3">Baseball match at Wrigley Field</p>
+              <p style="margin-left:9px; margin-top:18px;">Music? Sports? Politics? I'm up for it all! Let's hang out soon!</p>
+          <div style="text-align:center">  
+            <button class="btn btn-primary btn-cls" style="margin-top: 15px; background-color: #F05F40; font-size:15px;">Purchase tour </button> 
+          </div> 
+        </div>    
+      </div>
+
+      <div class="rcorners" id="guide-4">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card card-block">
+                <img src="images/UIFaces/img4.jpg" class="img-responsive img-rounded" alt="Tour Mentor" style="position:absolute, top:50%, left:50%">
+            </div>
+          </div>
+          <div class="col-md-6 guideName">
+            <h3 id="name-4">Bill Rudford</h3>
+            <p class="location-cls"><span class="glyphicon glyphicon-map-marker marker-cls" style='color:#00b159;' id="location-4">
+              Wrigley Field
+            </span></p>
+          </div>
+          <div class="col-md-3 price-cls">
+            <h3 id="cost-4">$25</h3>
+          </div>
+        </div> 
+        <div class="row">                
+          <div class="rating" id="rating-4">
+              
+          </div>
+          <p class="card-header-text" style="margin: 10px; font-size: 18px;" id="description-4">Baseball match at Wrigley Field</p>
+              <p style="margin-left:9px; margin-top:18px;">Adventurous? Let's explore the unknown together! I'll keep you safe, I promise :P</p>
+          <div style="text-align:center">  
+            <button class="btn btn-primary btn-cls" style="margin-top: 15px; background-color: #F05F40; font-size:15px;">Purchase tour </button> 
+          </div> 
+        </div>    
+      </div>
+
+      <div class="rcorners" id="guide-5">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="card card-block">
+                <img src="images/UIFaces/img5.jpg" class="img-responsive img-rounded" alt="Tour Mentor" style="position:absolute, top:50%, left:50%">
+            </div>
+          </div>
+          <div class="col-md-6 guideName">
+            <h3 id="name-5">Bill Rudford</h3>
+            <p class="location-cls"><span class="glyphicon glyphicon-map-marker marker-cls" style='color:#f37735;' id="location-5">
+              Wrigley Field
+            </span></p>
+          </div>
+          <div class="col-md-3 price-cls">
+            <h3 id="cost-5">$25</h3>
+          </div>
+        </div> 
+        <div class="row">                
+          <div class="rating" id="rating-5">
+              
+          </div>
+          <p class="card-header-text" style="margin: 10px; font-size: 18px;" id="description-5">Baseball match at Wrigley Field</p>
+              <p style="margin-left:9px; margin-top:18px;">  Are you geeky? I certainly am. Let me show you the geeky hangouts of Boston!</p>
+          <div style="text-align:center">  
+            <button class="btn btn-primary btn-cls" style="margin-top: 15px; background-color: #F05F40; font-size:15px;">Purchase tour </button> 
+          </div> 
+        </div>    
+      </div>
+    </div>
+  </div>
+
+  
+  </body>
+</html>
